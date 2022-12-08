@@ -105,6 +105,9 @@ names(df)[names(df)=='TCURINST'] <- 'INSTRUCTION_EXPENDITURE'
 names(df)[names(df)=='TCURSSVC'] <- 'SUPPORT_SERVICES_EXPENDITURE'
 names(df)[names(df)=='TCURONON'] <- 'OTHER_EXPENDITURE'
 names(df)[names(df)=='TCAPOUT'] <- 'CAPITAL_OUTLAY_EXPENDITURE'
-
+df = df %>% select(State_County_Code, everything())
+df = df %>% select(County_Name, everything())
+df = df %>% select(STATE, everything())
+df = df %>% select(School_Dis_Code, everything())
 df = df %>% select(School_Dis_Name, everything())
 write.csv(df,"C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Data.csv")
