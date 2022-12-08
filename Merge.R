@@ -4,7 +4,6 @@ library(stringr)
 
 SNAP <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/SNAP Benefits_County Level_2013 edit.csv")
 Fin <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Finances2013.csv")
-State <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/sdlist-1314.csv")
 
 #Delet State total
 SNAP<-SNAP[SNAP$X.1 != "Alabama",]
@@ -62,3 +61,14 @@ SNAP<-SNAP[SNAP$X.1 != "Wyoming",]
 SNAP$X.1 <- str_sub(SNAP$X.1,end=-4)
 SNAP$X.1 <- gsub(',','',SNAP$X.1)
 
+#SNAP
+SNAP<-SNAP[,-c(1:2)]
+SNAP<-SNAP[-c(1:2),]
+names(SNAP)[names(SNAP)=='X.1'] <- 'State_Name'
+names(SNAP)[names(SNAP)=='X.2'] <- 'SNAP'
+
+#Fin
+Fin <- Fin[,-c(1:1)]
+
+
+State <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/sdlist-1314.csv")
