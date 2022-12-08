@@ -1,9 +1,11 @@
 library(caret)
 library(dplyr)
 library(stringr)
+library(tidyr)
 
 SNAP <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/SNAP Benefits_County Level_2013 edit.csv")
 Fin <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Finances2013.csv")
+State <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/sdlist-1314-updated.csv")
 
 #Delet State total
 SNAP<-SNAP[SNAP$X.1 != "Alabama",]
@@ -62,13 +64,47 @@ SNAP$X.1 <- str_sub(SNAP$X.1,end=-4)
 SNAP$X.1 <- gsub(',','',SNAP$X.1)
 
 #SNAP
-SNAP<-SNAP[,-c(1:2)]
 SNAP<-SNAP[-c(1:2),]
-names(SNAP)[names(SNAP)=='X.1'] <- 'State_Name'
+names(SNAP)[names(SNAP)=='Table.with.column.headers.in.row.3'] <- 'State_Code'
+names(SNAP)[names(SNAP)=='X'] <- 'County_Code'
+names(SNAP)[names(SNAP)=='X.1'] <- 'County_Name'
 names(SNAP)[names(SNAP)=='X.2'] <- 'SNAP'
+
+State <- State[,-c(1:1)]
+State<-State[-c(1:2),]
+names(State)[names(State)=='X'] <- 'State_Code'
+names(State)[names(State)=='X.1'] <- 'School_Dis_Code'
+names(State)[names(State)=='X.2'] <- 'School_Dis_Name'
+names(State)[names(State)=='X.3'] <- 'County_Name'
+names(State)[names(State)=='X.4'] <- 'County_Code'
+State$School_Dis_Name <- tolower(State$School_Dis_Name)
+
+#Com State Code and County Code
+SNAP<-tidyr::unite(SNAP,"State_County_Code","State_Code","County_Code")
+State<-tidyr::unite(State,"State_County_Code","State_Code","County_Code")
+
+#Merge State and SNAP by County Name
+df <- merge(SNAP,State,by='State_County_Code')
+df<- select(df,-c('County_Name.y'))
+names(df)[names(df)=='County_Name.x'] <- 'County_Name'
 
 #Fin
 Fin <- Fin[,-c(1:1)]
+names(Fin)[names(Fin)=='NAME'] <- 'School_Dis_Name'
+Fin$School_Dis_Name <- tolower(Fin$School_Dis_Name)
 
+df <- merge(df,Fin,by='School_Dis_Name')
 
-State <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/sdlist-1314.csv")
+#Rename data frame
+names(df)[names(df)=='TOTALREV'] <- 'TOTAL_REVENUE'
+names(df)[names(df)=='TFEDREV'] <- 'FEDERAL_REVENUE'
+names(df)[names(df)=='TSTREV'] <- 'STATE_REVENUE'
+names(df)[names(df)=='TLOCREV'] <- 'LOCAL_REVENUE'
+names(df)[names(df)=='TOTALEXP'] <- 'TOTAL_EXPENDITURE'
+names(df)[names(df)=='TCURINST'] <- 'INSTRUCTION_EXPENDITURE'
+names(df)[names(df)=='TCURSSVC'] <- 'SUPPORT_SERVICES_EXPENDITURE'
+names(df)[names(df)=='TCURONON'] <- 'OTHER_EXPENDITURE'
+names(df)[names(df)=='TCAPOUT'] <- 'CAPITAL_OUTLAY_EXPENDITURE'
+
+df = df %>% select(School_Dis_Name, everything())
+write.csv(df,"C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Data.csv")
