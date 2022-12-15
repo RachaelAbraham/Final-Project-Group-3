@@ -5,11 +5,10 @@ library(tidyr)
 
 SNAP <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/SNAP Benefits_County Level_2013 edit.csv")
 Education <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Education.csv")
-Population <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/PopulationEstimates.csv")
 Unemployment <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Unemployment 2000-2021_USDA_csv.csv")
-Tax <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Tax.csv")
+Tax <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Tax_clean.csv")
 
-#Delet State total
+#SNAP
 SNAP<-SNAP[SNAP$X.1 != "Alabama",]
 SNAP<-SNAP[SNAP$X.1 != "Alaska",]
 SNAP<-SNAP[SNAP$X.1 != "Arizona",]
@@ -61,65 +60,196 @@ SNAP<-SNAP[SNAP$X.1 != "West Virginia",]
 SNAP<-SNAP[SNAP$X.1 != "Wisconsin",]
 SNAP<-SNAP[SNAP$X.1 != "Wyoming",]
 
-#Delete state abbreviation
-SNAP$X.1 <- str_sub(SNAP$X.1,end=-4)
-SNAP$X.1 <- gsub(',','',SNAP$X.1)
+#SNAP$X.1 <- str_sub(SNAP$X.1,end=-4)
+#SNAP$X.1 <- gsub(',','',SNAP$X.1)
 
-#SNAP
 SNAP<-SNAP[-c(1:2),]
 names(SNAP)[names(SNAP)=='Table.with.column.headers.in.row.3'] <- 'State_Code'
 names(SNAP)[names(SNAP)=='X'] <- 'County_Code'
-names(SNAP)[names(SNAP)=='X.1'] <- 'County_Name'
+names(SNAP)[names(SNAP)=='X.1'] <- 'State_County_Name'
 names(SNAP)[names(SNAP)=='X.2'] <- 'SNAP'
-
-#State <- State[,-c(1:1)]
-State<-State[-c(1:2),]
-names(State)[names(State)=='X'] <- 'State_Code'
-names(State)[names(State)=='X.1'] <- 'School_Dis_Code'
-names(State)[names(State)=='X.2'] <- 'School_Dis_Name'
-names(State)[names(State)=='X.3'] <- 'County_Name'
-names(State)[names(State)=='X.4'] <- 'County_Code'
-names(State)[names(State)=='Table.with.column.headers.in.row.3.'] <- 'Abbe'
-State$School_Dis_Name <- tolower(State$School_Dis_Name)
-
-#Com State Code and County Code
-SNAP<-tidyr::unite(SNAP,"State_County_Code","State_Code","County_Code")
-State<-tidyr::unite(State,"State_County_Code","State_Code","County_Code")
-State<-tidyr::unite(State,"State_School_Dis_Name","Abbe","School_Dis_Name")
-
-#Merge State and SNAP by County Name
-df <- left_join(State,SNAP,by='State_County_Code')
-df<- select(df,-c('County_Name.y'))
-names(df)[names(df)=='County_Name.x'] <- 'County_Name'
-df <- df[-c(2:3)]
+#SNAP <- SNAP[-c(1:2)]
 
 
+#Education
+Education<-Education[Education$Area.name != "Alabama",]
+Education<-Education[Education$Area.name != "Alaska",]
+Education<-Education[Education$Area.name != "Arizona",]
+Education<-Education[Education$Area.name != "Arkansas",]
+Education<-Education[Education$Area.name != "California",]
+Education<-Education[Education$Area.name != "Colorado",]
+Education<-Education[Education$Area.name != "Connecticut",]
+Education<-Education[Education$Area.name != "Delaware",]
+Education<-Education[Education$Area.name != "Florida",]
+Education<-Education[Education$Area.name != "Georgia",]
+Education<-Education[Education$Area.name != "Hawaii",]
+Education<-Education[Education$Area.name != "Idaho",]
+Education<-Education[Education$Area.name != "Illinois",]
+Education<-Education[Education$Area.name != "Indiana",]
+Education<-Education[Education$Area.name != "Iowa",]
+Education<-Education[Education$Area.name != "Kansas",]
+Education<-Education[Education$Area.name != "Kentucky",]
+Education<-Education[Education$Area.name != "Louisiana",]
+Education<-Education[Education$Area.name != "Maine",]
+Education<-Education[Education$Area.name != "Maryland",]
+Education<-Education[Education$Area.name != "Massachusetts",]
+Education<-Education[Education$Area.name != "Michigan",]
+Education<-Education[Education$Area.name != "Minnesota",]
+Education<-Education[Education$Area.name != "Mississippi",]
+Education<-Education[Education$Area.name != "Missouri",]
+Education<-Education[Education$Area.name != "Montana",]
+Education<-Education[Education$Area.name != "Nebraska",]
+Education<-Education[Education$Area.name != "Nevada",]
+Education<-Education[Education$Area.name != "New Hampshire",]
+Education<-Education[Education$Area.name != "New Jersey",]
+Education<-Education[Education$Area.name != "New Mexico",]
+Education<-Education[Education$Area.name != "New York",]
+Education<-Education[Education$Area.name != "North Carolina",]
+Education<-Education[Education$Area.name != "North Dakota",]
+Education<-Education[Education$Area.name != "Ohio",]
+Education<-Education[Education$Area.name != "Oklahoma",]
+Education<-Education[Education$Area.name != "Oregon",]
+Education<-Education[Education$Area.name != "Pennsylvania",]
+Education<-Education[Education$Area.name != "Rhode Island",]
+Education<-Education[Education$Area.name != "South Carolina",]
+Education<-Education[Education$Area.name != "South Dakota",]
+Education<-Education[Education$Area.name != "Tennessee",]
+Education<-Education[Education$Area.name != "Texas",]
+Education<-Education[Education$Area.name != "Utah",]
+Education<-Education[Education$Area.name != "Vermont",]
+Education<-Education[Education$Area.name != "Virginia",]
+Education<-Education[Education$Area.name != "Washington",]
+Education<-Education[Education$Area.name != "West Virginia",]
+Education<-Education[Education$Area.name != "Wisconsin",]
+Education<-Education[Education$Area.name != "Wyoming",]
+Education <- Education[-c(1:1),]
+names(Education)[names(Education)=='Area.name'] <- 'County_Name'
+Education$State_County_Name <- paste(Education$County_Name, Education$State, sep=", ")
+Education <- Education[-c(1:3)]
 
-#Fin
-Fin <- Fin[,-c(1:1)]
-Fin <- Fin[-c(14:17)]
-names(Fin)[names(Fin)=='NAME'] <- 'School_Dis_Name'
-Fin$School_Dis_Name <- tolower(Fin$School_Dis_Name)
-Fin<-tidyr::unite(Fin,"State_School_Dis_Name","Abbe","School_Dis_Name")
 
-df <- left_join(Fin,State,by='State_School_Dis_Name')
+#Unemployment
+Unemployment <- Unemployment[-c(1:1),]
+Unemployment<-Unemployment[Unemployment$Area_name != "Alabama",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Alaska",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Arizona",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Arkansas",]
+Unemployment<-Unemployment[Unemployment$Area_name != "California",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Colorado",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Connecticut",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Delaware",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Florida",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Georgia",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Hawaii",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Idaho",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Illinois",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Indiana",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Iowa",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Kansas",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Kentucky",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Louisiana",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Maine",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Maryland",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Massachusetts",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Michigan",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Minnesota",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Mississippi",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Missouri",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Montana",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Nebraska",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Nevada",]
+Unemployment<-Unemployment[Unemployment$Area_name != "New Hampshire",]
+Unemployment<-Unemployment[Unemployment$Area_name != "New Jersey",]
+Unemployment<-Unemployment[Unemployment$Area_name != "New Mexico",]
+Unemployment<-Unemployment[Unemployment$Area_name != "New York",]
+Unemployment<-Unemployment[Unemployment$Area_name != "North Carolina",]
+Unemployment<-Unemployment[Unemployment$Area_name != "North Dakota",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Ohio",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Oklahoma",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Oregon",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Pennsylvania",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Rhode Island",]
+Unemployment<-Unemployment[Unemployment$Area_name != "South Carolina",]
+Unemployment<-Unemployment[Unemployment$Area_name != "South Dakota",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Tennessee",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Texas",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Utah",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Vermont",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Virginia",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Washington",]
+Unemployment<-Unemployment[Unemployment$Area_name != "West Virginia",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Wisconsin",]
+Unemployment<-Unemployment[Unemployment$Area_name != "Wyoming",]
+names(Unemployment)[names(Unemployment)=='Area_name'] <- 'County_Name'
+Unemployment$County_Name <- str_sub(Unemployment$County_Name,end=-4)
+Unemployment$County_Name <- gsub(',','',Unemployment$County_Name)
+Unemployment$State_County_Name <- paste(Unemployment$County_Name, Unemployment$State, sep=", ")
+Unemployment <- Unemployment[-c(1:3)]
 
-#Rename data frame
-names(df)[names(df)=='TOTALREV'] <- 'TOTAL_REVENUE'
-names(df)[names(df)=='TFEDREV'] <- 'FEDERAL_REVENUE'
-names(df)[names(df)=='TSTREV'] <- 'STATE_REVENUE'
-names(df)[names(df)=='TLOCREV'] <- 'LOCAL_REVENUE'
-names(df)[names(df)=='TOTALEXP'] <- 'TOTAL_EXPENDITURE'
-names(df)[names(df)=='TCURINST'] <- 'INSTRUCTION_EXPENDITURE'
-names(df)[names(df)=='TCURSSVC'] <- 'SUPPORT_SERVICES_EXPENDITURE'
-names(df)[names(df)=='TCURONON'] <- 'OTHER_EXPENDITURE'
-names(df)[names(df)=='TCAPOUT'] <- 'CAPITAL_OUTLAY_EXPENDITURE'
-df = df %>% select(State_County_Code, everything())
-df = df %>% select(County_Name, everything())
-df = df %>% select(STATE, everything())
-df = df %>% select(YRDATE, everything())
-df = df %>% select(School_Dis_Code, everything())
-df = df %>% select(State_School_Dis_Name, everything())
+#Tax
+Tax<-Tax[Tax$County.name != "Alabama",]
+Tax<-Tax[Tax$County.name != "Alaska",]
+Tax<-Tax[Tax$County.name != "Arizona",]
+Tax<-Tax[Tax$County.name != "Arkansas",]
+Tax<-Tax[Tax$County.name != "California",]
+Tax<-Tax[Tax$County.name != "Colorado",]
+Tax<-Tax[Tax$County.name != "Connecticut",]
+Tax<-Tax[Tax$County.name != "Delaware",]
+Tax<-Tax[Tax$County.name != "Florida",]
+Tax<-Tax[Tax$County.name != "Georgia",]
+Tax<-Tax[Tax$County.name != "Hawaii",]
+Tax<-Tax[Tax$County.name != "Idaho",]
+Tax<-Tax[Tax$County.name != "Illinois",]
+Tax<-Tax[Tax$County.name != "Indiana",]
+Tax<-Tax[Tax$County.name != "Iowa",]
+Tax<-Tax[Tax$County.name != "Kansas",]
+Tax<-Tax[Tax$County.name != "Kentucky",]
+Tax<-Tax[Tax$County.name != "Louisiana",]
+Tax<-Tax[Tax$County.name != "Maine",]
+Tax<-Tax[Tax$County.name != "Maryland",]
+Tax<-Tax[Tax$County.name != "Massachusetts",]
+Tax<-Tax[Tax$County.name != "Michigan",]
+Tax<-Tax[Tax$County.name != "Minnesota",]
+Tax<-Tax[Tax$County.name != "Mississippi",]
+Tax<-Tax[Tax$County.name != "Missouri",]
+Tax<-Tax[Tax$County.name != "Montana",]
+Tax<-Tax[Tax$County.name != "Nebraska",]
+Tax<-Tax[Tax$County.name != "Nevada",]
+Tax<-Tax[Tax$County.name != "New Hampshire",]
+Tax<-Tax[Tax$County.name != "New Jersey",]
+Tax<-Tax[Tax$County.name != "New Mexico",]
+Tax<-Tax[Tax$County.name != "New York",]
+Tax<-Tax[Tax$County.name != "North Carolina",]
+Tax<-Tax[Tax$County.name != "North Dakota",]
+Tax<-Tax[Tax$County.name != "Ohio",]
+Tax<-Tax[Tax$County.name != "Oklahoma",]
+Tax<-Tax[Tax$County.name != "Oregon",]
+Tax<-Tax[Tax$County.name != "Pennsylvania",]
+Tax<-Tax[Tax$County.name != "Rhode Island",]
+Tax<-Tax[Tax$County.name != "South Carolina",]
+Tax<-Tax[Tax$County.name != "South Dakota",]
+Tax<-Tax[Tax$County.name != "Tennessee",]
+Tax<-Tax[Tax$County.name != "Texas",]
+Tax<-Tax[Tax$County.name != "Utah",]
+Tax<-Tax[Tax$County.name != "Vermont",]
+Tax<-Tax[Tax$County.name != "Virginia",]
+Tax<-Tax[Tax$County.name != "Washington",]
+Tax<-Tax[Tax$County.name != "West Virginia",]
+Tax<-Tax[Tax$County.name != "Wisconsin",]
+Tax<-Tax[Tax$County.name != "Wyoming",]
+Tax <- Tax[-c(1:1),]
+Tax <- Tax[-c(12:140)]
+names(Tax)[names(Tax)=='County.name'] <- 'County_Name'
+Tax$State_County_Name <- paste(Tax$County_Name, Tax$State.Abr, sep=", ")
+Tax <- Tax[-c(1:4)]
 
-df = na.omit(df)
+
+
+#Merge
+df <- left_join(Education,Tax,by="State_County_Name")
+df <- left_join(df,Unemployment,by="State_County_Name")
+df <- left_join(df,SNAP,by="State_County_Name")
+
+df <- df %>% dplyr::select("State_County_Name",everything())
+
 write.csv(df,"C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Data.csv")
