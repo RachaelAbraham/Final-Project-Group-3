@@ -3,9 +3,11 @@ library(dplyr)
 library(stringr)
 library(tidyr)
 
-SNAP <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/SNAP Benefits_County Level_2013 edit.csv")
-Fin <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Finances2013.csv")
-State <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/sdlist-1314-updated.csv")
+SNAP <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/SNAP Benefits_County Level_2013 edit.csv")
+Education <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Education.csv")
+Population <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/PopulationEstimates.csv")
+Unemployment <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Unemployment 2000-2021_USDA_csv.csv")
+Tax <- read.csv("C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Database/Tax.csv")
 
 #Delet State total
 SNAP<-SNAP[SNAP$X.1 != "Alabama",]
