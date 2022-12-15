@@ -68,7 +68,7 @@ names(SNAP)[names(SNAP)=='Table.with.column.headers.in.row.3'] <- 'State_Code'
 names(SNAP)[names(SNAP)=='X'] <- 'County_Code'
 names(SNAP)[names(SNAP)=='X.1'] <- 'State_County_Name'
 names(SNAP)[names(SNAP)=='X.2'] <- 'SNAP'
-#SNAP <- SNAP[-c(1:2)]
+SNAP <- SNAP[-c(1:2)]
 
 
 #Education
