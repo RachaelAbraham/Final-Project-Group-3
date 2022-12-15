@@ -70,30 +70,37 @@ names(SNAP)[names(SNAP)=='X'] <- 'County_Code'
 names(SNAP)[names(SNAP)=='X.1'] <- 'County_Name'
 names(SNAP)[names(SNAP)=='X.2'] <- 'SNAP'
 
-State <- State[,-c(1:1)]
+#State <- State[,-c(1:1)]
 State<-State[-c(1:2),]
 names(State)[names(State)=='X'] <- 'State_Code'
 names(State)[names(State)=='X.1'] <- 'School_Dis_Code'
 names(State)[names(State)=='X.2'] <- 'School_Dis_Name'
 names(State)[names(State)=='X.3'] <- 'County_Name'
 names(State)[names(State)=='X.4'] <- 'County_Code'
+names(State)[names(State)=='Table.with.column.headers.in.row.3.'] <- 'Abbe'
 State$School_Dis_Name <- tolower(State$School_Dis_Name)
 
 #Com State Code and County Code
 SNAP<-tidyr::unite(SNAP,"State_County_Code","State_Code","County_Code")
 State<-tidyr::unite(State,"State_County_Code","State_Code","County_Code")
+State<-tidyr::unite(State,"State_School_Dis_Name","Abbe","School_Dis_Name")
 
 #Merge State and SNAP by County Name
-df <- merge(SNAP,State,by='State_County_Code')
+df <- left_join(State,SNAP,by='State_County_Code')
 df<- select(df,-c('County_Name.y'))
 names(df)[names(df)=='County_Name.x'] <- 'County_Name'
+df <- df[-c(2:3)]
+
+
 
 #Fin
 Fin <- Fin[,-c(1:1)]
+Fin <- Fin[-c(14:17)]
 names(Fin)[names(Fin)=='NAME'] <- 'School_Dis_Name'
 Fin$School_Dis_Name <- tolower(Fin$School_Dis_Name)
+Fin<-tidyr::unite(Fin,"State_School_Dis_Name","Abbe","School_Dis_Name")
 
-df <- merge(df,Fin,by='School_Dis_Name')
+df <- left_join(Fin,State,by='State_School_Dis_Name')
 
 #Rename data frame
 names(df)[names(df)=='TOTALREV'] <- 'TOTAL_REVENUE'
@@ -108,6 +115,9 @@ names(df)[names(df)=='TCAPOUT'] <- 'CAPITAL_OUTLAY_EXPENDITURE'
 df = df %>% select(State_County_Code, everything())
 df = df %>% select(County_Name, everything())
 df = df %>% select(STATE, everything())
+df = df %>% select(YRDATE, everything())
 df = df %>% select(School_Dis_Code, everything())
-df = df %>% select(School_Dis_Name, everything())
+df = df %>% select(State_School_Dis_Name, everything())
+
+df = na.omit(df)
 write.csv(df,"C:/Users/96209/Documents/GitHub/Final-Project-Group-3/Data.csv")
