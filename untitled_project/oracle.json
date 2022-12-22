@@ -1,0 +1,1 @@
+{"ongoing_trials": {"tuner0": "0"}, "hyperparameters": {"space": [{"class_name": "Float", "config": {"name": "lr", "default": 0.0001, "conditions": [], "min_value": 0.0001, "max_value": 0.01, "step": null, "sampling": "log"}}], "values": {"lr": 0.0001}}, "seed": 9358, "seed_state": 9359, "tried_so_far": ["673c8a7e98100895abcb6d203261ac9b"]}
